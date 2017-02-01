@@ -1,0 +1,9 @@
+\frametitle{HOLD UP! Logical Operators, aka, and vs. or}
+
+Logical operators return Boolean (TRUE or FALSE) values.
+
+\begin{itemize}
+\item \textbf{and}: \verb|condition1 AND condition2| evaluates to True if and only if both \verb|condition1| and \verb|condition2| are true.
+\item \textbf{or}: \verb|condition1 OR condition2| evaluates to True if and only if at least one of \verb|condition1| and \verb|condition2| is true.
+\item \textbf{not}: \verb|NOT condition| reverses the truth value of the condition.
+\end{itemize}
