@@ -1,6 +1,5 @@
 % These are the lecture notes for my CSCI360 course SPRING 2017
-% at John Jay College of Criminal Justice. They are based largely on
-% Schneier's Applied Cryptography.
+% at John Jay College of Criminal Justice.
 
 % Feel free to edit these slides and use them for your own courses.
 % HOWEVER DO NOT REMOVE THESE LINES!
@@ -127,7 +126,7 @@
 \subtitle{The Mathematics of Counting}
 
 \author
-{Lecture notes of Alexander Wood \\ \scriptsize \href{mailto:awood@jjay.cuny.edu}{awood@jjay.cuny.edu}}
+{Lecture notes of Alexander Wood \\ CSCI 360 Cryptography and Cryptanalysis \\ \scriptsize \href{mailto:awood@jjay.cuny.edu}{awood@jjay.cuny.edu}}
 \institute[JJay]{John Jay College of Criminal Justice}  
 
 \date{}
@@ -182,7 +181,6 @@ Twenty dice: $6^{20}$ outcomes.
 
 \begin{itemize}
 \item $1000^0 = 1$
-\item $0^0 = 1$ (by convention)
 \item $(4^2)^7 = 4^{14}$
 \item $7^{-1} = \frac{1}{7}$
 \item $\frac{1}{a^{-3}} = a^3$
@@ -201,38 +199,6 @@ Twenty dice: $6^{20}$ outcomes.
 
 For more exponents examples, visit this helpful webpage:
 \url{http://www.mesacc.edu/~scotz47781/mat120/notes/exponents/review/review.html}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{How hard is it to count?}
-
-\emph{You'd like to visit all 5 boroughs of NYC. How many different ways can you do this?}
-\newline
-
-\pause
-
-There are $5$ ways to pick the first borough, $4$ ways to pick the second, $3$ ways to pick the third, $2$ ways to pick the fourth, and $1$ way to pick the last. Thus there are
-\[
-5! = 5 \times 4 \times 3 \times 2 \times 1
-\]
-
-\end{frame}
-
-
-\begin{frame}
-\frametitle{HOLD UP! What's a factorial?!}
-
-Factorials are just products. For a positive integer $n$ define
-\[
-n! = n(n-1)(n-2)\cdots(2)(1)
-\]
-
-Examples:
-\begin{itemize}
-\item $4! = 4(3)(2)(1) = 24$
-\item $6! = 6(5)(4)(3)(2)(1) = 720$
-\end{itemize}
 \end{frame}
 
 
@@ -266,7 +232,7 @@ Logical operators return Boolean (TRUE or FALSE) values.
 \begin{frame}
 \frametitle{The Sum Principle}
 
-If there are $m$ ways to do $A$ and $n$ ways to do $B$, then then number of ways to do $A$ \emph{or} $B$ is $m+n$
+If there are $m$ ways to do $A$ and $n$ ways to do $B$, then {\color{red}the number of ways to do $A$ \textbf{or} $B$ is $m+n$}.
 \end{frame}
 
 \begin{frame}
@@ -280,7 +246,7 @@ How many ways could you make a chicken dish \emph{or} a steak dish? Seven.
 \begin{frame}
 \frametitle{The Product Principle}
 
-Say there are $m$ ways to do $A$ and $n$ ways to do $B$. The number of ways to do $A$ \textbf{and} $B$ is $m\times n$. \newline
+Say there are $m$ ways to do $A$ and $n$ ways to do $B$. {\color{red}The number of ways to do $A$ \textbf{and} $B$ is $m\times n$.} \newline
 
 Note that here, the ways of doing $A$ and the ways of doing $B$ are \emph{independent}, meaning they do not depend on one another. (For dependent choices, see slide 7)
 \end{frame}
@@ -373,6 +339,39 @@ You can try 10 out of 10,000 possible combinations, so your probability of succe
 
 \section{Permutations}
 
+
+\begin{frame}
+\frametitle{How hard is it to count?}
+
+\emph{You'd like to visit all 5 boroughs of NYC. How many different ways can you do this?}
+\newline
+
+\pause
+
+There are $5$ ways to pick the first borough, $4$ ways to pick the second, $3$ ways to pick the third, $2$ ways to pick the fourth, and $1$ way to pick the last. Thus there are
+\[
+5! = 5 \times 4 \times 3 \times 2 \times 1
+\]
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{HOLD UP! What's a factorial?!}
+
+Factorials are just products. For a positive integer $n$ define
+\[
+n! = n(n-1)(n-2)\cdots(2)(1)
+\]
+
+Examples:
+\begin{itemize}
+\item $4! = 4(3)(2)(1) = 24$
+\item $6! = 6(5)(4)(3)(2)(1) = 720$
+\end{itemize}
+\end{frame}
+
+
 \begin{frame}
 \frametitle{Permutations Example}
 
@@ -410,7 +409,7 @@ There are five choices for the first letter, four choices for the second letter,
 \begin{frame}
 \frametitle{Permutations}
 
-The number of permutations of $n$ objects taken $k$ at a time is given by
+The {\color{red}number of permutations of $n$ objects taken $k$ at a time} is given by
 \[
 \frac{n!}{(n-r)!} = n(n-1)\cdots(n-r+1)
 \]
@@ -454,11 +453,15 @@ Note that each four-letter choice has $4!$ permutations. Thus the total number o
 \begin{frame}
 \frametitle{Combinations}
 
-The number of possible ways of picking $k$ (unordered) outcomes from $n$ possibilities is called the number of \textbf{combinations}, or the \textbf{binomial coefficient}. It is denoted by $n\choose k$, pronounced ``n choose k,'' and given by 
+The {\color{red}number of possible ways of picking $k$ (unordered) outcomes from $n$ possibilities} is called the number of \textbf{combinations}, or the \textbf{binomial coefficient}. It is denoted by $n\choose k$, pronounced ``n choose k,'' and given by 
 \[
 {n \choose k} = \frac{n!}{k!(n-k)!}
 \]
 \end{frame}
+
+
+\section{Class Exercises}
+
 
 \begin{frame}
 \frametitle{Exercise 1}
