@@ -1,6 +1,0 @@
-\beamer@endinputifotherversion {3.36pt}
-\select@language {english}
-\beamer@sectionintoc {1}{The Game of Cryptography}{2}{0}{1}
-\beamer@sectionintoc {2}{Symmetric Vs. Asymmetric}{31}{0}{2}
-\beamer@sectionintoc {3}{Cryptanalysis}{36}{0}{3}
-\beamer@sectionintoc {4}{Security}{49}{0}{4}

@@ -1,5 +1,0 @@
-\beamer@endinputifotherversion {3.36pt}
-\select@language {english}
-\beamer@sectionintoc {1}{Sums \& Products}{13}{0}{1}
-\beamer@sectionintoc {2}{Permutations}{26}{0}{2}
-\beamer@sectionintoc {3}{Combinations}{34}{0}{3}

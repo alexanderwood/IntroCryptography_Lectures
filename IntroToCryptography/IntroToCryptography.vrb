@@ -1,8 +1,0 @@
-\frametitle{A main function}
-
-Now we wish to write a \verb|main| function.
-\begin{itemize}
-\item First, instantiate a \verb|CellPhone| object called \verb|c|
-\item Prompt the user to set values for the attributes of \verb|c| with calls to the \verb|set_price|, \verb|set_manufact|, and \verb|set_model| methods.
-\item Next ask the user which attribute they would like to display and use the \verb|get_price|, \verb|get_manufact|, and \verb|get_model| methods to display it for them. Ask the user if they would like to display another attribute and repeat until the user wishes to quit.
-\end{itemize}
