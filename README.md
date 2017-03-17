@@ -7,8 +7,8 @@ Feel free to use and edit these lecture slides for your own classroom or studyin
 In each folder, you will find:
 - tex file for the slides
 - pdf file of all the slides
-- folder containing example programs (where applicable)
-- folder containing the images in the slides (in case you want to edit the tex file) 
+- py folder: containing example python programs (where applicable)
+- img folder: containing the images in the slides (in case you want to edit the tex file) 
 
 Email me with any questions: awood [at] jjay.cuny.edu
 Or visit my website: http://awood.ws.gc.cuny.edu/
