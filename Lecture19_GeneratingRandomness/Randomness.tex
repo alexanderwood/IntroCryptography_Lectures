@@ -1,0 +1,334 @@
+% These are the lecture notes for my CSCI360 course SPRING 2017
+% at John Jay College of Criminal Justice. They are based largely on
+% Schneier's Applied Cryptography.
+
+% Feel free to edit these slides and use them for your own courses.
+% HOWEVER DO NOT REMOVE THESE LINES!
+% Email me at: awood [at] jjay.cuny.edu
+% or at: awood [at] gradcenter.cuny.edu
+
+
+\documentclass{beamer}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{forest}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+
+
+
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{} 
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}
+\newtheorem{cl}{Claim}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{conj}{Conjecture}
+\newtheorem{quest}{Question}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{obs}{Observation}[section]
+\newtheorem{exam}{Example}
+
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\interior}{\operatorname{int}}
+\newcommand{\bdry}{\operatorname{bdry}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\newcommand{\Gab}{(G_\phi)^{ab}} 
+\newcommand{\phibar}{\bar{\phi}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\power}{2^{\{P_1, \cdots , P_n\}}}
+\newcommand{\bp}{\begin{problem}}
+\newcommand{\ep}{\end{problem}}
+\newcommand{\ba}{\begin{answer}}
+\newcommand{\ea}{\end{answer}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\ben}{\renewcommand{\theenumi}{\alph{enumi}}
+\renewcommand{\labelenumi}{(\theenumi)}\begin{enumerate}}
+\newcommand{\een}{\end{enumerate}}
+\newcommand{\Hess}{\operatorname{Hessian}}
+\newcommand{\Aut}{\mathrm{Aut}}
+\newcommand{\Inn}{\mathrm{Inn}}
+\newcommand{\Out}{\mathrm{Out}}
+\newcommand{\End}{\mathrm{End}}
+
+
+\mode<presentation>
+{
+%  \usetheme{default}
+  \setbeamercovered{invisible}
+}
+
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{stmaryrd}
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+%\usecolortheme{default}
+%\usecolortheme{albatross}
+\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove} % grey, white, yellow
+%\usecolortheme{fly} %grey, yellow
+%\usecolortheme{lily} %white, yellow, blue
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+% Title page
+
+\title[Randomness]{Generating Randomness}
+\subtitle{Based on  \emph{Cryptography Engineering} by Schneier, Ferguson, Kohno, Chapter 9}
+
+\author
+{Lecture notes of Alexander Wood \\ \scriptsize \href{mailto:awood@jjay.cuny.edu}{awood@jjay.cuny.edu}}
+\institute[JJay]{John Jay College of Criminal Justice}  
+
+\date{}
+
+\begin{document}
+
+% Remove 'figure' text from figure captions 
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}
+\frametitle{True Randomness}
+
+What is \textbf{true randomness}? 
+\end{frame}
+
+\begin{frame}
+\frametitle{True Randomness}
+
+Avoiding too technical of a discussion, true randomness should be truly \textbf{unpredictable}. If we are witnessing a random stream of numbers, knowing the values up to one point will tell us absolutely nothing about the numbers to come. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Generating Randomness}
+
+How can we generate randomness, which is \textbf{nondeterministic}, using computers, why are by definition \textbf{deterministic}?
+\end{frame}
+
+\begin{frame}
+\frametitle{Pseudo-Random Number Generators}
+
+We will discuss \textbf{pseudo-random number generators (PRNGs)} which generate numbers that are not \emph{truly} random, but rather \textbf{computationally indistinguishable} from truly random numbers.
+\end{frame}
+
+\begin{frame}
+\frametitle{Vid eo}
+
+Let's begin by watching this excellent video by Khan Academy for an overview.\newline
+
+\url{https://www.youtube.com/watch?v=GtOt7EBNEwQ}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Entropy}
+
+\textbf{Entropy} provides a measure for randomness. A random $64$-bit string can take on $2^{64}$ possible values and hence has $64$ bits of entropy. \newline
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Entropy (Example)}
+Suppose instead that a $64$-bit string contains exactly $60$ \verb|0|'s and $4$ \verb|1|'s. This means there are ${64 \choose 4} = 635376$ possible values this bit string can take on. \newline
+
+Since $log_2(635375) \approx 19.3$, this means there are approximately $2^{19.3}$ possible values -- yielding an entropy of $19.3$ bits for our $64$ bit string.
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Exercise: Entropy}
+
+\begin{enumerate}[(a)]
+\item Suppose you have a \verb|100|-bit string that contains exactly $79$ \verb|1|'s. How many bits of entropy does this string contain? 
+\item What if it contains exactly $99$ \verb|1|'s? 
+\item Exaclty $50$ \verb|1|'s? 
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise: Entropy}
+
+\emph{Answer (a)}: With exactly $79$ \verb|1|'s it contains
+\[
+\log_2\left({100 \choose 79}\right) \approx 70.8
+\]
+bits of entropy.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise: Entropy}
+ \emph{Answer (b) }: With exactly $99$ \verb|1|'s it contains
+\[
+\log_2\left({100 \choose 99}\right) \approx 6.6
+\]
+bits of entropy.
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Exercise: Entropy}
+ \emph{Answer (b) }: With exactly $50$ \verb|1|'s it contains
+\[
+\log_2\left({100 \choose 50}\right) \approx 93.3
+\]
+bits of entropy.
+\end{frame}
+
+\begin{frame}
+\frametitle{Entropy}
+
+\emph{Why is the entropy for 99 ones so much smaller than the entropy for 50 ones?} \newline \pause
+
+The more we know about a string, the less entropy it has. 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Formal Entropy Definition}
+
+Given a probability distribution $P$ over a range of values $X$, the entropy $H$ is given by
+\[
+H(X) := - \sum_{x} P(X = x) \log_2 P(X = x).
+\]
+With the \emph{uniform distribution} over bit strings as above, the calculation reduces to what we performed on the previous slides. (Do not worry about this definition, I only include it so that you've seen it.)
+\end{frame}
+
+\begin{frame}
+\frametitle{True Randomness}
+
+Why do we not use truly random data for cryptographic applications? Discuss.
+\end{frame}
+
+\begin{frame}
+\frametitle{Generating Randomness}
+
+Possible methods of generating randomness are the timing of keystrokes or having the user input random data themselves. However, these methods will not be very reliable -- they would have too low of entropy. These processes are less random than you would think.
+\end{frame}
+
+\begin{frame}
+\frametitle{Generating Pseudorandomness}
+
+Instead we try and generate pseudorandomness. Pseudoranomness is generated from a random seed by some deterministic algorithm called a \textbf{pseudorandom number generator (PRNG)}. \newline
+
+Always assume that an adversary knows your PRNG! What you want to keep secret is your \textbf{key}.
+\end{frame}
+
+\begin{frame}
+\frametitle{PRNG Security}
+
+To measure the security of a PRNG we want to ask the following question: Given some pseudorandom outputs, it it possible for an attacker to predict future or past pseudorandom bits? \newline
+
+For a cryptographically secure PRNG the answer must be a resounding \textbf{no!} \newline
+
+This means that \textbf{an attacker cannot distinguish between a truly random sequence and your pseudo random sequence}.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Selecting a PRNG}
+
+Be very careful when selecting a PRNG and make sure that it is documented as \textbf{cryptographically} secure. \newline
+
+For instance, \verb|random.randint(a,b)| in Python's \verb|random| module generates a pseudo-random number between $a$ and $b$ -- however, it is not a cryptographically secure PRNG. The random module should be used for modeling and testing, never for true cryptographic applications. \newline
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Selecting a PRNG}
+
+In Python you can use the \verb|os| module to generate random values. \url{https://docs.python.org/3/library/os.html}\newline
+
+Python's \verb|secrets| module has some options. It uses random values generated by your os as well, but streamlines a lot of the work for you. \url{https://docs.python.org/3/library/secrets.html}
+\end{frame}
+
+\begin{frame}
+\frametitle{PRNGs}
+
+NIST provides a reference for PRNGs: \url{http://csrc.nist.gov/groups/ST/toolkit/random_number.html}\newline
+
+Some PRNG algorithms that are practical for cryptographic use are Yarrow, ChaCha20, Fortuna, ISAAC, and more. 
+\end{frame}
+
+\begin{frame}
+\frametitle{PRNG: Fortuna}
+
+Fortuna (named for the Roman goddess of chance) was designed by Schneier and Ferguson and published in 2003. It is based upon block ciphers. It has three parts:
+\begin{enumerate}[(1)]
+\item The \textbf{generator}, which takes a fixed size seed as input and generates an arbitrary amount of pseudo random data.
+\item The \textbf{accumulator}, which collects entropy for various sources in order to re-seed the generator.
+\item The \textbf{seed file control}, which ensures that random data is being generated regardless of when the computer was booted up.
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{PRNG: Fortuna}
+
+To learn how Fortuna operates in detail, read 9.3 through 9.6 of \emph{Cryptography Engineering} by Schneier, Ferguson, Kohno.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{References}
+
+\begin{itemize}
+\item \emph{Cryptography Engineering} by Schneier, Ferguson, Kohno, Chapter 9
+\end{itemize}
+\end{frame}
+\end{document}
+
+
