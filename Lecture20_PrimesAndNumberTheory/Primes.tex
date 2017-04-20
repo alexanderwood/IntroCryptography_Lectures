@@ -1,0 +1,590 @@
+% These are the lecture notes for my CSCI360 course SPRING 2017
+% at John Jay College of Criminal Justice. They are based largely on
+% Schneier's Applied Cryptography.
+
+% Feel free to edit these slides and use them for your own courses.
+% HOWEVER DO NOT REMOVE THESE LINES!
+% Email me at: awood [at] jjay.cuny.edu
+% or at: awood [at] gradcenter.cuny.edu
+
+
+\documentclass{beamer}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{forest}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+
+
+
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{} 
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}
+\newtheorem{cl}{Claim}
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{conj}{Conjecture}
+\newtheorem{quest}{Question}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{obs}{Observation}[section]
+\newtheorem{exam}{Example}
+
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\interior}{\operatorname{int}}
+\newcommand{\bdry}{\operatorname{bdry}}
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+\newcommand{\Gab}{(G_\phi)^{ab}} 
+\newcommand{\phibar}{\bar{\phi}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\power}{2^{\{P_1, \cdots , P_n\}}}
+\newcommand{\bp}{\begin{problem}}
+\newcommand{\ep}{\end{problem}}
+\newcommand{\ba}{\begin{answer}}
+\newcommand{\ea}{\end{answer}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\ben}{\renewcommand{\theenumi}{\alph{enumi}}
+\renewcommand{\labelenumi}{(\theenumi)}\begin{enumerate}}
+\newcommand{\een}{\end{enumerate}}
+\newcommand{\Hess}{\operatorname{Hessian}}
+\newcommand{\Aut}{\mathrm{Aut}}
+\newcommand{\Inn}{\mathrm{Inn}}
+\newcommand{\Out}{\mathrm{Out}}
+\newcommand{\End}{\mathrm{End}}
+
+
+\mode<presentation>
+{
+%  \usetheme{default}
+  \setbeamercovered{invisible}
+}
+
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{stmaryrd}
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+%\usecolortheme{default}
+%\usecolortheme{albatross}
+\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove} % grey, white, yellow
+%\usecolortheme{fly} %grey, yellow
+%\usecolortheme{lily} %white, yellow, blue
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+% Title page
+
+\title[Primes]{Prime Number Theory}
+\subtitle{Based on  \emph{Cryptography Engineering} by Schneier, Ferguson, Kohno, Chapter 10}
+
+\author
+{Lecture notes of Alexander Wood \\ \scriptsize \href{mailto:awood@jjay.cuny.edu}{awood@jjay.cuny.edu}}
+\institute[JJay]{John Jay College of Criminal Justice}  
+
+\date{}
+
+\begin{document}
+
+% Remove 'figure' text from figure captions 
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Primes}
+
+Before we can discuss public key cryptography we need some mathematical background. Today we discuss \textbf{divisibility and primes}.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Divisibility}
+
+A number $a$ is a \textbf{divisor} of $b$, denoted $a|b$, if you can divide $b$ by $a$ without a remainder. \newline
+\pause
+
+\emph{Examples:}
+\begin{itemize}
+\item $7|35$
+\item $1|13$
+\item $15|15$
+\item $12 \not| 19$ (here, $\not |$ denotes ``does not divide'')
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prime Numbers}
+
+We say a number is \textbf{prime} if it has exactly two positive divisors, one and itself.\newline
+
+The first primes are $2, 3, 5, 7, 11, 13, 17, 19, 23, \dots$. A number which is not prime is called \textbf{composite}. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Prime Numbers: Fun Facts}
+
+The number $1$ is neither prime nor composite.\newline
+
+The number $2$ is the only even prime. Why is this?
+\end{frame}
+
+\begin{frame}
+\frametitle{Divisibility Lemma}
+
+\begin{lemma}
+If $a|b$ and $b|c$, then $a|c$.
+\end{lemma}
+\begin{proof}
+If $a|b$ then $b=ak$ for some integer $k$. Furthermore, $b|c$ implies that $c=b\ell$ for some integer $\ell$. Thus, $c=b\ell = (ak)\ell = a(k\ell)$. This means that $a$ is a divisor of $c$; hence, $a|c$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Mathematical Proofs}
+
+What we saw in the previous slide is a \textbf{mathematical proof}. It starts with a statement of facts, or assumptions, and proceeds logically step-by-step until the desired conclusion has been reached.
+\end{frame}
+
+\begin{frame}
+\frametitle{The Sieve of Eratosthenes}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+Eratosthenes, a friend of Archimedes, was the first person to accuately measure the diameter of the earth 2000 years ago. He created an algorithm now known as the \textbf{Sieve of Eratosthenes} which generates prime numbers. Even today it is an excellent algorithm for generating primes. 
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\includegraphics[scale=.1]{IMG/eratosthanes.jpg}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Sieve of Eratosthenes}
+
+To find all of the prime numbers from $1$ up to some integer $n$, carry out the following:
+\begin{enumerate}[(1)]
+\item Write a list of all integers from 2 through $n$.
+\item Start with $p=2$, the smallest prime.
+\item Cross out every multiple of two in the list.
+\item Return to the first uncrossed number in your list. Cross out all of its multiples.
+\item Repeat until you reach the end of the list.
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Infinity of Primes}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+What is widely regarded as one of the most beautiful proofs in history was written by the Greek mathematician Euclid, showing that there are an infinite number of primes. \newline
+
+It uses a method called \textbf{reductio ad absurdum} or \textbf{proof by contradiction}, where you assume the negation of your conclusion is true and show that then some portion of your premise must be false. 
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\includegraphics[scale=.5]{IMG/euclid.jpg}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Infinity of Primes}
+
+\begin{theorem}[Euclid]
+There are infinitely many prime numbers. 
+\end{theorem}
+\begin{proof}
+Assume to the contrary that there are only a finite number of primes. Because the list of prime numbers is finite, they are enumerable, meaning we can list them. Say that 
+\[
+p_1, p_2, \dots, p_k
+\]
+constitutes a complete list of prime numbers. \newline
+
+\emph{Continued on next slide.}
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Infinity of Primes}
+
+\begin{proof}
+\emph{Continued.}
+
+Consider the number
+\[
+n = p_1p_2\cdots p_k + 1.
+\]
+This number cannot be prime, due to our assumption that we have already listed all of the primes. Let $d$ be the smallest divisor of $n$ which is not $1$. None of the primes in our list can be equal to $d$, because $n$ divided by $p_i$ has a remainder of $1$ for any $1\le i \le k$. Therefore, $d$ must be a prime value greater than $p_k$, a contradiction.
+\end{proof}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prime Modulus Arithemetic}
+
+Computing values modulo some prime $p$ is the the main application of prime numbers in cryptography. We compute values \textbf{modulo some prime $p$} if we use  only the numbers
+\[
+0, 1, 2, \dots, p-1.
+\]
+Perform all computations as you normally would, then \textbf{reduce} your answer modulo $p$, denoted $\pmod p$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Modular Arithmetic}
+
+For example,
+\[
+(25 \mod 7) = 4.
+\]
+When you divide $25$ by $7$, you end up with a multiple of $4$, which is its value reduced modulo $7$. You can also compute modular reductions by adding/subtracting multiples of the modulus:
+\[
+25 = 25 - 21 = 4 \pmod 7
+\]
+\[
+100 = 100 - 70 = 30 = 30 - 28 = 2 \pmod 7
+\]
+\[
+-5 = -5 + 17 = 12 \pmod{17}
+\]
+Note that our final answer must always be a positive value $x$ where $0 \le x < p$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Multiplication}
+
+Multiplication is carried out similarly; first multiply as you normally would, then reduce modulo $p$.
+\begin{itemize}
+\item $(5\cdot 3 \mod 7) = 1$
+\item $6\cdot 9 = 54 = 54 - 43 = 11 \pmod{43}$
+\item $5\cdot(-2) = -10 = -10 + 17 = 7\pmod{17}$
+\item $((-7)\cdot 3 \mod{19}) = 17$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Multiplication}
+
+\begin{theorem}
+For any prime $p$, $(p-1)^2 = 1\pmod p$.
+\end{theorem}
+\begin{proof}
+Observe:
+\begin{align*}
+(p-1)^2 &= p^2 -2p + 1 \pmod p\\
+	&= 1 \pmod p
+\end{align*}
+\end{proof}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Exponentiation}
+
+We exponentiate again by computing as we regularly would, then reducing modulo $p$.
+\begin{itemize}
+\item $4^2 = 8 = 1 \pmod 7$
+\item $4^6 = 4096 = 1 \pmod 7$
+\item $19^96 = 1 \pmod{97}$
+\item $8^8 = 1 \pmod 9$
+\end{itemize}
+Are we noticing a pattern?
+\end{frame}
+
+\begin{frame}
+\frametitle{Fermat's Little Theorem}
+
+Fermat's Little Theorem makes reduction of exponents modulo a prime much more quick.
+
+\begin{theorem}
+For a prime value $p$ and any integer $a$, 
+\[
+a^{p-1} = 1 \pmod p.
+\]
+Equivalently,
+\[
+a^p = a \pmod p.
+\]
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fermat's Little Theorem}
+
+For example, say we wish to compute $(2^{1939} \mod{89})$. Observe that $1939 = (22)(88) + 3$. Therefore, 
+\begin{align*}
+2^{1993} \mod{89} &= 2^{(22)(89) + 3} \\
+	&= (2^{22})^{88}\cdot 2^{3} \\
+	&= 2^{3} \\
+	&= 8\pmod{89}
+\end{align*}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Useful Tips For Computations Modulo p}
+
+\begin{itemize}
+\item You can add/subtract any multiple of $p$ from your number.
+\item Results should always lie within the range $0, 1, \dots, p-1$.
+\item Any value raised to the $(p-1)$th power reduces to $1$ modulo $p$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Groups and Finite Fields}
+
+Mathematicians call the set of numbers modulo a prime p a \textbf{finite field} and
+often refer to it as the ``mod p'' field. Different notations for this field you might encounter include $\mathbb{Z}_p$, $\mathrm{GF}(p)$, or $\mathbb{Z}/p\mathbb{Z}$.\newline 
+
+The branch of mathematics called \textbf{abstract algebra} has large areas devoted to the study of prime fields.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Groups}
+
+A \textbf{group} is a mathematical structure consisting of a set of numbers together with some binary operation. A group is \textbf{closed under addition}, contains an \textbf{identity} element, and every element has an \textbf{inverse}. \newline
+
+\textbf{Group theory} is another wide and important branch of abstract algebra. This class requires only some very basic introductory group theory.
+\end{frame}
+
+\begin{frame}
+\frametitle{Additive Group Modulo p}
+
+In this class, we do not need to make this too complicated! We consider the group $\mathbb{Z}_p$, which is the set of numbers $0, 1, 2, \dots, p-1$, together with addition. Denote this group $(\mathbb{Z}_p, +)$, the \textbf{additive group modulo p}.\newline
+
+In the additive case we could also consider a group $(Z_n, +)$, where $n$ is a composite modulus.
+\end{frame}
+
+\begin{frame}
+\frametitle{The Group $\mathbb{Z}_p$}
+
+Let's verify the group properties for $\Z_p$, also denoted $(\mathbb{Z}_p, +)$.
+\begin{itemize}
+\item \emph{Closed under addition?} Adding any two elements in $\Z_p$ and reducing modulo $p$ yields an element in $\Z_p$. Therefore, $\Z_p$ is \textbf{closed under addition.}
+\item \emph{Contains identity?} The \textbf{identity element} in $(\Z_p, +)$ is $0$. This means that for any $a$ in $\Z_p$, we have that 
+\[a + 0 = 0+ a = a\pmod p.\]
+\item {\emph{Contains inverses?}} The \textbf{inverse} of an element $a$ in $(\Z_p, +)$ is $(-a \mod p)$. This means that:
+\[
+a + (-a) = (-a) + a = 0 \pmod p.
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Multiplicative Group Modulo p}
+
+The \textbf{multiplicative group modulo $p$} is denoted $\Z_p^*$. This is the group composed of the set of numbers $1, 2, \dots, p-1$ with the operation of addition modulo $p$. Note that $0$ is not included here. \newline
+
+Note that $Z_p^*$ is a group if and only if $p$ is prime.
+\end{frame}
+
+\begin{frame}
+\frametitle{The Group $(\mathbb{Z}_p, +)$}
+
+Let's verify that $\Z_p^*$ is a group.
+\begin{itemize}
+\item \emph{Closed under addition?} Multiplying any two elements in $\Z_p^*$ and reducing modulo $p$ yields an element in $\Z_p^*$. Therefore, $\Z_p^*$ is \textbf{closed under multiplication.}
+\item \emph{Contains identity?} The \textbf{identity element} in $\Z_p^*$ is $1$. This means that for any $a$ in $\Z_p^*$, we have that 
+\[a\cdot 1 = 1\cdot a = a\pmod p.\]
+\item {\emph{Contains inverses?}} The \textbf{inverse} of an element $a$ in $\Z_p^*$ is some value $b$ such that This means that:
+\[
+ab = ba = 1 \pmod p.
+\]
+Some number $b$ satisfying this property always exists when $p$ is prime; we skip the proof of this for now.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Subgroups}
+
+A \textbf{subgroup} of a group consists of some subset of elements from the group which form a group themselves.
+\end{frame}
+
+\begin{frame}
+\frametitle{Subgroups Examples}
+
+Consider the group $(Z_8, +)$. This group contains several subgroups. Subgroups include $\Z_2$ and $\Z_4$. \newline
+
+This grop has a subgroup consisting of the elements $\{0, 4\}$ under addition, as well as the subgroup consisting of the elements $\{0, 2, 4, 6\}$ under addition. How can we convince ourselves that these are subgroups?
+\end{frame}
+
+\begin{frame}
+\frametitle{Subgroups Examples}
+
+The multiplicative group $\Z_p^*$ has subgroups as well. Consider $\Z_7^*$ which consists of $\{1, 2, 3, 4, 5, 6\}$ under multiplication. Subgroups include:
+\begin{itemize}
+\item $\{1,6\}$ 
+\item $\{1, 2, 4\}$
+\end{itemize}
+How can we check that these are, in fact, subgroups? Does $\{1, 5\}$ form a subgroup under multiplication modulo $7$? Why or why not?
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Subgroups in Cryptography}
+
+Many cryptographic protocols make use of subgroups. We've discussed addition, subtraction, multiplication, and exponentiation modulo $n$.\newline
+
+The two remaining properties we must discuss are \textbf{division} and \textbf{logarithms} modulo $n$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Division: The GCD Algorithm}
+
+The \textbf{greatest common divisor (GCD)} of two numbers $a$ and $b$ is the largest value $k$ such that $k|a$ and $k|b$. This is often denoted $(a,b) = k$.\newline
+
+For example, the GCD of $24$ and $30$ is $6$, also written $(24, 30) = 6$.
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Division: The GCD Algorithm}
+
+Euclid wrote an algorithm which computes the GCD of two numbers. This algorithm is still used today and has important applications in cryptography.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Division: The GCD Algorithm}
+
+\emph{Input:} Positive integers $a$ and $b$.
+
+\emph{Output:} $k$, where $(a, b) = k$.
+
+\begin{enumerate}[(1)]
+\item  While $a \ne 0$:
+	\begin{itemize}
+	\item $(a,b) := (b\pmod a, a)$
+	\end{itemize}
+\item Return $b$.
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The GCD Algoirthm}
+
+For example, say our inputs are $24$ and $30$. The algorithm runs as follows:
+\begin{enumerate}[Loop 1:]
+\setcounter{enumi}{-1}
+\item $(a, b) = (24, 30)$
+\item $(a, b) = (6, 24)$
+\item $(a, b) = (0, 6)$
+\end{enumerate}
+And the algorithm returns $6$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The GCD Algoirthm}
+
+For example, say our inputs are $12$ and $45$. The algorithm runs as follows:
+\begin{enumerate}[Loop 1:]
+\setcounter{enumi}{-1}
+\item $(a, b) = (12, 45)$
+\item $(a, b) = (9, 12)$
+\item $(a, b) = (3, 9)$
+\item $(a, b) = (0, 3)$
+\end{enumerate}
+And the algorithm returns $3$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Coding Exercises: Euclid's GCD Algorithm}
+
+Write Python code which carries oud Euclid's GCD algorithm. 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Least Common Multiples}
+
+The \textbf{Least Common Multiple (LCM)} of two numbers is the smallest number that is a multiple of both of them. Find the LCM of $a$ and $b$ with the following formula:
+\[
+\mathrm{LCM}(a,b) = \frac{ab}{(a,b)}
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Next Class}
+
+Next class we will look at \textbf{Euclid's Extended Algorithm}, how to divide and find logarithms modulo $p$, as well as theorems describing how to find all of the subgroups of $\Z_p^*$. \newline
+
+On Wednesday we will have a quiz over all of this information.
+\end{frame}
+\begin{frame}
+\frametitle{References}
+
+\begin{itemize}
+\item \emph{Cryptography Engineering} by Schneier, Ferguson, Kohno, Chapter 10
+\end{itemize}
+\end{frame}
+\end{document}
+
+
