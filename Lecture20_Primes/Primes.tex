@@ -511,16 +511,55 @@ Euclid wrote an algorithm which computes the GCD of two numbers. This algorithm 
 
 
 \begin{frame}
-\frametitle{Division: The GCD Algorithm}
+\frametitle{The GCD Algorithm}
 
-\emph{Input:} Positive integers $a$ and $b$.
+Say we wish to find the GCD of $12$ and $45$. Observe that $45 = 9 \pmod{12}$. Therefore, we can write out:
+\begin{align*}
+45 &= 3 \cdot 12 + 9
+\end{align*}
+Next we compute $9 \pmod{12}$.
+\begin{align*}
+12 &= 1 \cdot 9 + {\color{red}\mathbf{3}} 
+\end{align*}
+Lastly we see that $3 = 0 \pmod 9$, and hence we are done! We have found the GCD, 3.
+\end{frame}
 
-\emph{Output:} $k$, where $(a, b) = k$.
+\begin{frame}
+\frametitle{The GCD Algorithm}
+
+Next let's find the GCD of $1512$ and $784$.
+\begin{align*}
+1512 &= 1 \cdot 784 + 728 \\
+784 &= 1 \cdot 728 + {\color{red}\mathbf{56}} \\
+728 &= 13\cdot 56
+\end{align*}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The GCD Algorithm}
+
+Now let's find the GCD of $270$ an $192$.
+\begin{align*}
+270 &= 1\cdot 192 + 78\\
+192 &= 2\cdot 78 + 36\\
+78 &= 2\cdot 36 + {\color{red}\mathbf{6}}\\
+36 &= 6\cdot 6
+\end{align*}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The GCD Algorithm}
+
+\textbf{Input:} Positive integers $a$ and $b$.
+
+\textbf{Output:} $k$, where $(a, b) = k$.
 
 \begin{enumerate}[(1)]
 \item  While $a \ne 0$:
 	\begin{itemize}
-	\item $(a,b) := (b\pmod a, a)$
+	\item $(a,b) \leftarrow (b\pmod a, a)$
 	\end{itemize}
 \item Return $b$.
 \end{enumerate}
@@ -558,7 +597,7 @@ And the algorithm returns $3$.
 \begin{frame}
 \frametitle{Coding Exercises: Euclid's GCD Algorithm}
 
-Write Python code which carries oud Euclid's GCD algorithm. 
+Write Python code which carries out Euclid's GCD algorithm. 
 \end{frame}
 
 
@@ -571,10 +610,206 @@ The \textbf{Least Common Multiple (LCM)} of two numbers is the smallest number t
 \]
 \end{frame}
 
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+Euclid's algorithm provides us with the GCD of two numbers, but this is not \emph{quite} enough for division modulo $p$. \newline
+
+What else do we need?
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+While computing $(a,b) = d$, we also need to find integers which allow us to express $d$ as a \textbf{linear combination} of $a$ and $b$. In other words, we need integers $r$ and $s$ such that 
+\[
+d = as + br
+\]
+How does \emph{this} help us?
+\end{frame}
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+When we say we want to divide modulo $p$, what we want to do is compute the value 
+\[
+\frac{1}{b}  \pmod p.
+\]
+also called the \textbf{inverse} of $b$ modulo $p$. 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+We know that $p$ is prime, and $b$ is some value between $1$ and $p-1$.\newline
+
+What is the GCD of $p$ and $b$?
+\[
+(a,b) = ?
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+The GCD of a prime $p$ and a positive integer $b$, $0<b\le p-1$, is always going to be
+\[
+(b,p) = 1.
+\]
+Amazing!
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+Any two numbers can be written as a linear combination of their GCD. Since the GCD of $b$ and $p$ is $1$, we can find values $r$ and $s$ such that
+\[
+1 = br + ps.
+\]
+If we take this modulo $p$, we have that
+\[
+1 = br + ps \pmod p.
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+We have
+\[
+1 = br + ps \pmod p.
+\]
+Let's reduce this! Since $p = 0 \pmod p$, we have:
+\[
+1 = br \pmod p.
+\]
+Ultimately for us, this means we have found the inverse of $b$ modulo $p$! Specifically, 
+\[
+\frac{1}{b} = r \pmod p.
+\]
+\textbf{WOW!}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Division Modulo $p$}
+
+We see in order to divide modulo a prime $p$, we need to be able to express $(p,b) = 1$ as a linear combination of $p$ and $b$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Euclid's Algorithm, But Backwards}
+
+Let's use Euclid's algorithm to express $3$ as a linear combination of $12$ and $45$. First, we will carry out Euclid's algorithm. Let's use the example from a previous slide of $270$ an $192$.
+\begin{align*}
+270 &= 1\cdot 192 + 78\\
+192 &= 2\cdot 78 + 36\\
+78 &= 2\cdot 36 + {\color{red}\mathbf{6}}\\
+36 &= 6\cdot 6
+\end{align*}
+We now want to re-write this \textbf{backwards} in order to express $6$ as a linear combination of $270$ and $192$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Euclid's Algorithm, But Backwards}
+Let's go backwards through the computations above. On the right, let's re-write the remainder at each step as a linear combination.
+\begin{align*}36 &= 6\cdot 6 & & \\
+78 &= 2\cdot 36 + {\color{red}\mathbf{6}}&  6 &= 78 - 2\cdot 36 \\
+192 &= 2\cdot 78 + 36 &  &= 78 - 2(192 - 2\cdot 78)\\
+ & & &= 5\cdot 78 - 2 \cdot 192 \\
+270 &= 1\cdot 192 + 78 &  &= 5(270 - 192) -2(192) \\
+&  & & = 5\cdot 270 - 7\cdot 192
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Euclid's Algorithm, But Backwards}
+
+We did it!
+
+\[
+6 = 5\cdot 270 + (-7)\cdot 192
+\]
+
+Amazing. Now, let's automate this entire process with \textbf{Euclid's Extended Algorithm}.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Euclid's Extended Algorithm}
+
+\textbf{Input:} Non-negative integers $a$ and $b$.
+
+\textbf{Output:} $d$, where $(a, b) = d$, as well as integers $r$ and $s$ such that $d = ar + bs$.
+
+\begin{enumerate}[(1)]
+\item $(c,d) \leftarrow (a,b)$
+\item $(u_c, v_c, u_d, v_d) \leftarrow (1, 0, 0, 1)$
+\item  While $c \ne 0$:
+	\begin{itemize}
+	\item $q \leftarrow [d/c]$
+	\item $(c,d) \leftarrow (d-qc, c)$
+	\item $(u_c, v_c, u_d, v_d) \leftarrow (u_d - qu_c, v_d-qv_c, u_c, v_c)$
+	\end{itemize}
+\item Return $d, (u_d, v_d)$
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Example: Euclid's Extended Algorithm}
+
+For our first example let's look at $270$ and $192$ again.
+\begin{enumerate}[(1)]
+\item $(c,d) \leftarrow (192, 270)$
+\item $(u_c, v_c, u_d, v_d) = (1, 0, 0, 1)$
+\item  \begin{enumerate}[(Round 1)]
+ \item           
+          \begin{itemize}
+          \item $q \leftarrow [270/192] = 1$
+          \item $(c,d) \leftarrow (270-1\cdot 192, 192) = (78, 192)$
+          \item $(u_c, v_c, u_d, v_d) = (-1, 1, 1, 0)$
+          \end{itemize}
+ \item 
+          \begin{itemize}
+          \item $q \leftarrow [192/78] = 2$
+          \item $(c,d) \leftarrow (192 - 2\cdot 78, 78)  = (36, 78)$
+          \item $(u_c, v_c, u_d, v_d) \leftarrow (3, -2, -1, 1)$
+          \end{itemize}
+  \item
+  		\begin{itemize}
+          \item $q \leftarrow [78/36] = 2$
+          \item $(c,d) \leftarrow (78-2\cdot 36, 36) = (6,36)$
+          \item $(u_c, v_c, u_d, v_d) \leftarrow (-7, 5, 3, -2)$
+  		\end{itemize}
+  \item 
+         \begin{itemize}
+          \item $q \leftarrow [36/6] = 0$
+          \item $(c,d) \leftarrow (78-2\cdot 36, 36) = (0,6)$
+          \item $(u_c, v_c, u_d, v_d) \leftarrow (17, -12, -7, 5)$
+  		\end{itemize}
+\end{enumerate}
+\item Return $d=6$ and $(u_d, v_d) = (-7, 5)$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Example: Euclid's Extended Algorithm}
+
+We see that input $(192, 270)$ yield outputs $d=6$ and $(u_d, v_d) = (-5, 3)$. This means that
+\[
+6 = (-7)\cdot 192 + (5) \cdot 270
+\]
+\end{frame}
+
+
 \begin{frame}
 \frametitle{Next Class}
-
-Next class we will look at \textbf{Euclid's Extended Algorithm}, how to divide and find logarithms modulo $p$, as well as theorems describing how to find all of the subgroups of $\Z_p^*$. \newline
 
 On Wednesday we will have a quiz over all of this information.
 \end{frame}
