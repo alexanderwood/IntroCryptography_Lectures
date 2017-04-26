@@ -341,10 +341,9 @@ Observe:
 
 We exponentiate again by computing as we regularly would, then reducing modulo $p$.
 \begin{itemize}
-\item $4^2 = 8 = 1 \pmod 7$
 \item $4^6 = 4096 = 1 \pmod 7$
-\item $19^96 = 1 \pmod{97}$
-\item $8^8 = 1 \pmod 9$
+\item $19^{96} = 1 \pmod{97}$
+\item $8292^8 = 1 \pmod 9$
 \end{itemize}
 Are we noticing a pattern?
 \end{frame}
@@ -371,7 +370,7 @@ a^p = a \pmod p.
 
 For example, say we wish to compute $(2^{1939} \mod{89})$. Observe that $1939 = (22)(88) + 3$. Therefore, 
 \begin{align*}
-2^{1993} \mod{89} &= 2^{(22)(89) + 3} \\
+2^{1939} \mod{89} &= 2^{(22)(88) + 3} \\
 	&= (2^{22})^{88}\cdot 2^{3} \\
 	&= 2^{3} \\
 	&= 8\pmod{89}
@@ -466,9 +465,9 @@ A \textbf{subgroup} of a group consists of some subset of elements from the grou
 \begin{frame}
 \frametitle{Subgroups Examples}
 
-Consider the group $(Z_8, +)$. This group contains several subgroups. Subgroups include $\Z_2$ and $\Z_4$. \newline
+Consider the group $(\Z_8, +)$. This group contains several subgroups. Subgroups include $\Z_2$ and $\Z_4$. \newline
 
-This grop has a subgroup consisting of the elements $\{0, 4\}$ under addition, as well as the subgroup consisting of the elements $\{0, 2, 4, 6\}$ under addition. How can we convince ourselves that these are subgroups?
+This group has a subgroup consisting of the elements $\{0, 4\}$ under addition, as well as the subgroup consisting of the elements $\{0, 2, 4, 6\}$ under addition. How can we convince ourselves that these are subgroups?
 \end{frame}
 
 \begin{frame}
@@ -808,11 +807,150 @@ We see that input $(192, 270)$ yield outputs $d=6$ and $(u_d, v_d) = (-5, 3)$. T
 \end{frame}
 
 
-\begin{frame}
-\frametitle{Next Class}
 
-On Wednesday we will have a quiz over all of this information.
+\begin{frame}[fragile]
+\frametitle{Working Modulo 2}
+
+While not of specific interest in this class, group theory has applications in computer science beyond cryptography. Addition and multiplication modulo the prime $2$ are equivalent to the \verb|XOR| and \verb|AND| gates, respectively. \newline
+
+
+\begin{columns}
+\begin{column}{.3\textwidth}
+\begin{tabular}{ r|c|c| }
+\multicolumn{1}{r}{}
+ &  \multicolumn{1}{c}{0}
+ & \multicolumn{1}{c}{1} \\
+\cline{2-3}
+0 &  0&  1\\
+\cline{2-3}
+1 & 1&0 \\
+\cline{2-3}
+\end{tabular}\newline
+
+\verb|    XOR|\newline add. $\pmod 2$
+\end{column}
+
+\begin{column}{.3\textwidth}
+\begin{tabular}{ r|c|c| }
+\multicolumn{1}{r}{}
+ &  \multicolumn{1}{c}{0}
+ & \multicolumn{1}{c}{1} \\
+\cline{2-3}
+0 &  0&  1\\
+\cline{2-3}
+1 &1 & 1\\
+\cline{2-3}
+\end{tabular}\newline
+
+\verb|    AND|\newline mult. $\pmod 2$
+\end{column}
+\end{columns}
 \end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Large Primes: C/C++}
+
+Cryptographic protocols often use \textbf{large primes} which are hundreds of digits long. In programming languages like C++ this means we need \textbf{multiple precision libraries} because the \verb|int| and \verb|long int| data types do not allocate enough storage for numbers as large as these primes, and even the \verb|float| type does not yield the required precision. \newline
+
+One such library for Cis called \textbf{GMP}, the GNU Multiple Precision Arithmetic Library. You can download and read about its implementation here:
+\begin{center}
+\url{https://gmplib.org/}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Large Primes: Python}
+
+Storage allocation works very differently in Python from most programming languages. You do not need to specify memory allocation up front. This gives an ease of use and flexibility other programming languages lack. \newline
+
+However, when working with such large numbers, it often becomes necessary to control memory allocation very precisely. C++ is often used in cryptography for this reason. However it will be sufficient for us to use Python for the scope of this course. 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Large Primes: Python}
+
+Since data types in Python are not limited to a certain number of bits, to determine the maximum integer size we simply see how many bits of memory the computer holds. \newline
+
+We can use the \verb|sys| module to check this. For instance, on my \verb|64|-bit machine:
+\begin{verbatim}
+>>> import sys
+>>> sys.maxsize
+9223372036854775807
+\end{verbatim}
+
+This number is precisely equal to $2^{63}-1$. (On a \verb|32|-bit machine the maximum value would be $2^{31}-1$).
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Large Primes: Python}
+
+Thus we see that in Python on a \verb|64|-bit machine, we can store integer values up to \verb|9223372036854775807| bits long. In public-key cryptography we wish to generate primes which are only \verb|2000| to \verb|4000| bits long. Thus we do not need to use a multiple precision library in Python to work with large primes. 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Generating Large Primes}
+
+How do we generate a large prime? Any ideas?
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Generating Large Primes}
+
+To generate a large prime $p$ in the neighborhood of some large number $n$, we simply 
+\begin{enumerate}[Step 1:]
+\item Pick a random value $p$ in the ``neighborhood'' of $n$
+\item Determine whether this value is random or not.
+\item Repeat until $p$ is prime. 
+\end{enumerate}
+
+There are very good available algorithms for determining whether a number is prime or not. What algorithm have we looked at for determining this?
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Generating Large Primes}
+
+How many times will we have to repeat the loop? Perhaps surprisingly, prime numbers are actually relatively common. In the neighborhood of a number $n$ there are approximately $\ln n$ prime values! \newline
+
+Furthermore, primality checking is often trivial -- so primality checking is very quick for many numbers. For instance, any multiple of $2$ is obviously not prime. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Generating Large Primes}
+
+Primality testing is often carried out as follows:
+\begin{itemize}
+\item First, pick a random number $p$ in the neighborhood of $n$. 
+\item Check whether $p$ is divisible by any numbers in some ``small'' range -- say, verify that $n$ has no divisors between $2$ and $1000$.
+\item If $p$ has no divisors in this small range run a more ``expensive'' primality test such as the Rabin-Miller test.
+\item Repeat until $p$ is prime. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Generating Large Primes: Example}
+
+Say, for instance, that we wish to find a random prime which is \verb|2000| bits long. A number of this size lies inside the range $2^{1999}$ and $2^{2000}$. We expect about $\ln(2^{1999})$ primes in this range. In fact, about one in every $1386$ numbers is prime in this range. 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Your Next Midterm}
+
+Midterm 2 will be partially answers to written questions which you complete individually, and partially a group coding project where you write programs for generating large primes.\newline
+
+Next week you will receive all instructions for the second midterm including psedudocode 
+\end{frame}
+
+
+
+
 \begin{frame}
 \frametitle{References}
 
