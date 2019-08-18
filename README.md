@@ -10,5 +10,5 @@ In each folder, you will find:
 - py folder: containing example python programs (where applicable)
 - img folder: containing the images in the slides (in case you want to edit the tex file) 
 
-Email me with any questions: awood [at] jjay.cuny.edu
-Or visit my website: http://awood.ws.gc.cuny.edu/
+Email me with any questions: alexwood2 [at] gmail
+Or visit my website: http://alexanderwood.github.io
